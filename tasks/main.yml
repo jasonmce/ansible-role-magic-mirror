@@ -1,7 +1,4 @@
 ---
-# Variable setup.
-- name: Include variables.
-  include_vars: "main.yml"
 
 - name: Install software
   become: true
