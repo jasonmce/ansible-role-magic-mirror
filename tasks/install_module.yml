@@ -6,7 +6,6 @@
     dest: "{{ mm_root }}/modules/{{ item.name }}"
     clone: yes
     update: yes
-    force: yes
 
 - name: "NPM Install Module {{ item.name }}"
   npm:
