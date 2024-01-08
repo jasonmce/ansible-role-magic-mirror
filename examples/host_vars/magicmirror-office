@@ -4,6 +4,11 @@ ansible_ssh_user: pi
 
 mm_root: '/home/pi/magicmirror/mounts' # Root install directory for MagicMirrorOS.
 
+mm_copy:
+- name: Custom css file
+  src: livingroom-custom.css
+  dest: "{{ mm_root }}/css/custom.css"
+
 mm_modules:
 - name: alert
 

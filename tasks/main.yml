@@ -15,11 +15,6 @@
     src: './templates/config.js.j2'
     dest: "{{ mm_root }}/config/config.js"
 
-- name: Magic Mirror Config.js
-  template:
-    src: './custom.css'
-    dest: "{{ mm_root }}/css/custom.css"
-
 - name: Install Modules
   include_tasks: install_module.yml
   when: item.github is defined
