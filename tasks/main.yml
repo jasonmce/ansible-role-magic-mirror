@@ -1,0 +1,39 @@
+---
+# Variable setup.
+- name: Include variables.
+  include_vars: "main.yml"
+
+- name: Install software
+  become: true
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - nodejs
+    - npm
+
+- name: Magic Mirror Config.js
+  template:
+    src: './templates/config.js.j2'
+    dest: "{{ mm_root }}/config/config.js"
+
+- name: Magic Mirror Config.js
+  template:
+    src: './custom.css'
+    dest: "{{ mm_root }}/css/custom.css"
+
+- name: Install Modules
+  include_tasks: install_module.yml
+  when: item.github is defined
+  with_items: "{{ mm_modules }}"
+
+- name: Copy images
+  include_tasks: copy_files.yml
+  when: item.src is defined
+  with_items: "{{ mm_copy }}"
+
+- name: Restart with new config
+  shell: |
+    cd {{ mm_root }}/../run
+    docker-compose restart

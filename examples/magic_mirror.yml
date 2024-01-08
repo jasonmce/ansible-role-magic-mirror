@@ -1,0 +1,4 @@
+---
+- hosts: magicmirror
+  roles:
+    - role: magic_mirror

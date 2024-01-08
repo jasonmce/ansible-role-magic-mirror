@@ -1,0 +1,6 @@
+---
+
+- name: "Copy files for {{ item.name }}"
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"

@@ -1,0 +1,75 @@
+---
+ansible_host: magicmirror-livingroom.youdomain.com
+ansible_ssh_user: pi
+
+mm_root: '/home/pi/magicmirror/mounts' # Root install directory for MagicMirrorOS.
+
+mm_modules:
+- name: alert
+
+- name: updatenotification
+  position: top_bar
+
+- name: clock
+  position: top_left
+
+- name: calendar
+  position: top_left
+  header: US Holidays
+  config:
+    calendars:
+    - symbol: calendar-check
+      url: 'webcal://www.calendarlabs.com/ical-calendar/ics/76/US_Holidays.ics'
+
+- name: compliments
+  position: lower_third
+
+- name: currentweather
+  position: top_right
+  config:
+    location: New York
+    locationID: 5128581
+    appid: 'YOUR_OPENWEATHER_API_KEY'
+
+- name: weatherforecast
+  position: top_right
+  header: Weather Forecast
+  config:
+    location: New York
+    locationID: 5128581
+    appid: 'YOUR_OPENWEATHER_API_KEY'
+
+- name: planetrise
+  github: https://github.com/croxis/planetrise.git
+  position: 'top_right'
+  header: 'PLanet Rise'
+  config:
+    latitude: 39.0926565
+    longitude: -77.1067706
+    bodies:
+      'Sun': '☉'
+      'Moon': '☽'
+      'Mercury': '☿'
+      'Venus': '♀'
+      'Mars': '♂'
+      'Jupiter': '♃'
+      'Saturn': '♄'
+
+- name: newsfeed
+  position: bottom_bar
+  config:
+    feeds:
+    - title: New York Times
+      url: https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml
+    showSourceTitle: true
+    showPublishDate: true
+    broadcastNewsFeeds: true
+    broadcastNewsUpdates: true
+
+- name: MMM-Screencast
+  displayName: Youtube
+  github: https://github.com/kevinatown/MMM-Screencast.git
+  position: middle_center
+  options:
+    position: center
+    castName: Magic Mirror
