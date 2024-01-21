@@ -2,7 +2,7 @@
 
 - name: Install software
   become: true
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
   vars:
@@ -11,21 +11,20 @@
     - npm
 
 - name: Magic Mirror Config.js
-  template:
+  ansible.builtin.template:
     src: './templates/config.js.j2'
     dest: "{{ mm_root }}/config/config.js"
 
 - name: Install Modules
-  include_tasks: install_module.yml
+  ansible.builtin.include_tasks: install_module.yml
   when: item.github is defined
   with_items: "{{ mm_modules }}"
 
 - name: Copy images
-  include_tasks: copy_files.yml
+  ansible.builtin.include_tasks: copy_files.yml
   when: item.src is defined
   with_items: "{{ mm_copy }}"
 
-- name: Restart with new config
-  shell: |
-    cd {{ mm_root }}/../run
-    docker-compose restart
+- name: Restart install with new config
+  ansible.builtin.shell: |
+    pm2 restart MagicMirror

@@ -1,13 +1,14 @@
 ---
 
 - name: "Download Module {{ item.name }}"
-  git:
+  ansible.builtin.git:
     repo: "{{ item.github }}"
     dest: "{{ mm_root }}/modules/{{ item.name }}"
     clone: yes
+    force: yes
     update: yes
 
 - name: "NPM Install Module {{ item.name }}"
-  npm:
+  ansible.builtin.npm:
     path: "{{ mm_root }}/modules/{{ item.name }}"
   ignore_errors: yes
