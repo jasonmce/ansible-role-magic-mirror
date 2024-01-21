@@ -5,6 +5,7 @@ Welcome to the Magic Mirror Ansible Role, designed to streamline the maintenance
 ## Features
 
 **What this role does:**
+- Install the Magic Mirror application if it is not found.
 - Installs Node.js and npm, ensuring they are available for custom module installations.
 - Reads the `mm_modules` variable from your Magic Mirror's `host_vars` file.
 - Clones any module repositories needed.
