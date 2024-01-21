@@ -1,6 +1,29 @@
 ---
 
-- name: Install software
+- name: Magic Mirror installed
+  ansible.builtin.stat:
+    path: /home/pi/MagicMirror
+  register: magic_mirror_normal
+
+- name: Magic Mirror docker installed
+  ansible.builtin.stat:
+    path: /home/pi/magicmirror
+  register: magic_mirror_docker
+
+- name: Install Magic Mirror
+  ansible.builtin.shell: |
+    # From https://github.com/sdetweil/MagicMirror_scripts.
+    # Install magic mirror.
+    bash -c  "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/raspberry.sh) --yes"
+    # Turn off screen saver.
+    bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/screensaveroff.sh)"
+    # Use pm2 to autostart MagicMirror at bootup.
+    bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/fixuppm2.sh)"
+    # Restart magic mirror
+    #pm2 start MagicMirror
+  when: not magic_mirror_normal.stat.exists and not magic_mirror_docker.stat.exists
+
+- name: Install node packages
   become: true
   ansible.builtin.apt:
     name: "{{ packages }}"
