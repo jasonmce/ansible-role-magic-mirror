@@ -1,5 +1,12 @@
 ---
 
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400 #One day
+
 - name: Magic Mirror installed
   ansible.builtin.stat:
     path: /home/pi/MagicMirror
@@ -13,15 +20,17 @@
 - name: Install Magic Mirror
   ansible.builtin.shell: |
     # From https://github.com/sdetweil/MagicMirror_scripts.
-    # Install magic mirror.
     bash -c  "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/raspberry.sh) --yes"
-    # Turn off screen saver.
+  when: not magic_mirror_normal.stat.exists and not magic_mirror_docker.stat.exists
+
+- name: Turn off screen saver
+  ansible.builtin.shell: |
     bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/screensaveroff.sh)"
+
+- name: Boot with pm2
+  ansible.builtin.shell: |
     # Use pm2 to autostart MagicMirror at bootup.
     bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/fixuppm2.sh)"
-    # Restart magic mirror
-    #pm2 start MagicMirror
-  when: not magic_mirror_normal.stat.exists and not magic_mirror_docker.stat.exists
 
 - name: Install node packages
   become: true
