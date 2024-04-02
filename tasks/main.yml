@@ -32,6 +32,15 @@
     # Use pm2 to autostart MagicMirror at bootup.
     bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/fixuppm2.sh)"
 
+# From https://docs.magicmirror.builders/getting-started/upgrade-guide.html
+- name: Upgrade normal Magic Mirror install
+  ansible.builtin.shell: |
+    cd MagicMirror
+    git reset --hard --quiet
+    git pull
+    npm run install-mm
+  when: magic_mirror_normal.stat.exists
+
 - name: Install node packages
   become: true
   ansible.builtin.apt:
