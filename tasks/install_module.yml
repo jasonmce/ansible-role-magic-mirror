@@ -1,4 +1,15 @@
 ---
+# Some modules have their package.json changed during installation.
+- name: Module path exists
+  stat:
+    path: "{{ mm_root }}/modules/{{ item.name }}"
+  register: register_module_path
+
+- name: "Restore changes to {{ item.name }} if necessary"
+  ansible.builtin.shell:
+    cmd: git reset --hard --quiet
+    chdir: "{{ mm_root }}/modules/{{ item.name }}"
+  when: register_module_path.stat.exists
 
 - name: "Download Module {{ item.name }}"
   ansible.builtin.git:
