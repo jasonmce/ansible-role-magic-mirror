@@ -37,7 +37,7 @@
   ansible.builtin.shell: |
     cd MagicMirror
     git reset --hard --quiet
-    git pull
+    git pull origin HEAD --quiet
     npm run install-mm
   when: magic_mirror_normal.stat.exists
 
