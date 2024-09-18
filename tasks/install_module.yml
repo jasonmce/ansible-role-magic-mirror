@@ -1,6 +1,6 @@
 ---
 # Some modules have their package.json changed during installation.
-- name: Module path exists
+- name: "Module path exists"
   stat:
     path: "{{ mm_root }}/modules/{{ item.name }}"
   register: register_module_path
