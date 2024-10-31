@@ -43,7 +43,16 @@ Here's how to set up and use this Ansible role for maintaining your Magic Mirror
 
 ## Deployment
 
+```ansible-playbook -i hosts magic_mirror.yml -l HOST```
+
 To update your Magic Mirror installations, run the `magic_mirror.yml` playbook. This playbook will apply the necessary maintenance tasks to your Magic Mirrors based on the configured variables.
+
+## Configuration changes
+
+To push changes to config.js and images:
+```ansible-playbook -i hosts --tags configuration magic_mirror.yml -l HOST```
+
+The tasks that update config.js, the images, and restarting the mirror process are all tagged with configuration.  This way you can push module config tweaks and new images without rebuilding the whole machine.
 
 ## Background
 

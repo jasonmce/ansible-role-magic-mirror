@@ -53,6 +53,8 @@
   ansible.builtin.template:
     src: './templates/config.js.j2'
     dest: "{{ mm_root }}/config/config.js"
+  tags:
+  - configuration
 
 - name: Install Modules
   ansible.builtin.include_tasks: install_module.yml
@@ -63,7 +65,11 @@
   ansible.builtin.include_tasks: copy_files.yml
   when: item.src is defined
   with_items: "{{ mm_copy }}"
+  tags:
+  - configuration
 
 - name: Restart install with new config
   ansible.builtin.shell: |
     pm2 restart MagicMirror
+  tags:
+  - configuration
