@@ -1,25 +1,37 @@
 ---
 # Some modules have their package.json changed during installation.
 - name: "Module path exists"
+  become: true
   stat:
     path: "{{ mm_root }}/modules/{{ item.name }}"
   register: register_module_path
+  tags:
+  - configuration
 
 - name: "Restore changes to {{ item.name }} if necessary"
+  become: true
   ansible.builtin.shell:
     cmd: git reset --hard --quiet
     chdir: "{{ mm_root }}/modules/{{ item.name }}"
   when: register_module_path.stat.exists
+  tags:
+  - configuration
 
 - name: "Download Module {{ item.name }}"
+  become: true
   ansible.builtin.git:
     repo: "{{ item.github }}"
     dest: "{{ mm_root }}/modules/{{ item.name }}"
     clone: yes
     force: yes
     update: yes
+  tags:
+  - configuration
 
 - name: "NPM Install Module {{ item.name }}"
+  become: true
   ansible.builtin.npm:
     path: "{{ mm_root }}/modules/{{ item.name }}"
   ignore_errors: yes
+  tags:
+  - configuration

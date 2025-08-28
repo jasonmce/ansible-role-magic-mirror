@@ -1,0 +1,35 @@
+---
+# @see https://pimylifeup.com/raspberry-pi-nodejs/
+- name: Install nodejs
+  ansible.builtin.shell:
+    cmd: |
+      sudo apt install -y ca-certificates curl gnupg
+      curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/nodesource.gpg
+      NODE_MAJOR=20
+      echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+      sudo apt update
+      sudo apt install nodejs
+  tags:
+  - install
+
+# @see https://docs.magicmirror.builders/getting-started/installation.html
+- name: Install Magic Mirror
+  ansible.builtin.shell: |
+    git clone https://github.com/MagicMirrorOrg/MagicMirror
+    cd MagicMirror
+    npm run install-mm
+  tags:
+  - install
+
+- name: Turn off screen saver
+  ansible.builtin.shell: |
+    bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/screensaveroff.sh)"
+  tags:
+  - install
+
+- name: Boot with pm2
+  ansible.builtin.shell: |
+    # Use pm2 to autostart MagicMirror at bootup.
+    bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/fixuppm2.sh)"
+  tags:
+  - install

@@ -7,47 +7,31 @@
     update_cache: yes
     cache_valid_time: 86400 #One day
 
+- name: Install Mirror
+  ansible.builtin.include_tasks: install_magic_mirror.yml
+  tags:
+  - install
+
 - name: Magic Mirror installed
   ansible.builtin.stat:
     path: /home/pi/MagicMirror
   register: magic_mirror_normal
+  tags:
+  - install
+  - upgrade
 
 - name: Magic Mirror docker installed
   ansible.builtin.stat:
     path: /home/pi/magicmirror
   register: magic_mirror_docker
 
-- name: Install Magic Mirror
-  ansible.builtin.shell: |
-    # From https://github.com/sdetweil/MagicMirror_scripts.
-    bash -c  "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/raspberry.sh) --yes"
-  when: not magic_mirror_normal.stat.exists and not magic_mirror_docker.stat.exists
-
-- name: Turn off screen saver
-  ansible.builtin.shell: |
-    bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/screensaveroff.sh)"
-
-- name: Boot with pm2
-  ansible.builtin.shell: |
-    # Use pm2 to autostart MagicMirror at bootup.
-    bash -c "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/fixuppm2.sh)"
-
 # From https://github.com/sdetweil/MagicMirror_scripts#upgrade-to-next-magicmirror-version-from-an-existing-installation
 - name: Upgrade normal Magic Mirror install
   ansible.builtin.shell: |
-    bash -c  "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/upgrade-script.sh)"
+    bash -c  "$(curl -sL https://raw.githubusercontent.com/sdetweil/MagicMirror_scripts/master/upgrade-script.sh)" apply
   when: magic_mirror_normal.stat.exists
-
-- name: Install node packages
-  become: true
-  ansible.builtin.apt:
-    name: "{{ packages }}"
-    state: present
-  vars:
-    packages:
-    - nodejs
-    - npm
-  when: false
+  tags:
+  - upgrade
 
 - name: Magic Mirror Config.js
   ansible.builtin.template:
@@ -60,8 +44,11 @@
   ansible.builtin.include_tasks: install_module.yml
   when: item.github is defined
   with_items: "{{ mm_modules }}"
+  tags:
+  - configuration
+  - upgrade
 
-- name: Copy images
+- name: Copy files
   ansible.builtin.include_tasks: copy_files.yml
   when: item.src is defined
   with_items: "{{ mm_copy }}"
@@ -73,3 +60,5 @@
     pm2 restart MagicMirror
   tags:
   - configuration
+  - reload
+  - upgrade
