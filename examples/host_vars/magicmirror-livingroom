@@ -21,6 +21,14 @@ mm_modules:
     - symbol: calendar-check
       url: 'webcal://www.calendarlabs.com/ical-calendar/ics/76/US_Holidays.ics'
 
+- name: MMM-Fortune
+  github: https://github.com/jasonmce/MMM-Fortune.git
+  position: top_center
+  config:
+    maxWidth: "100%"
+    header: ""
+    color: "white"
+
 - name: compliments
   position: lower_third
 

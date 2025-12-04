@@ -54,6 +54,10 @@ To push changes to config.js and images:
 
 The tasks that update config.js, the images, and restarting the mirror process are all tagged with configuration.  This way you can push module config tweaks and new images without rebuilding the whole machine.
 
+## Updates
+
+To update your Magic Mirror installations, run the `magic_mirror.yml` playbook with the `--tags upgrade` flag. This playbook will apply the necessary maintenance tasks to your Magic Mirrors based on the configured variables, including upgrading the Magic Mirror application and its modules.
+
 ## Background
 
 The inspiration for this role came from the need to automate and simplify the process of maintaining Magic Mirrors. Here's a brief overview of my workflow for deploying a Magic Mirror:
