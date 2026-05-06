@@ -35,3 +35,13 @@
   ignore_errors: yes
   tags:
   - configuration
+
+- name: "Ensure {{ item.name }} is writable by SSH user"
+  become: true
+  ansible.builtin.file:
+    path: "{{ mm_root }}/modules/{{ item.name }}"
+    owner: "{{ ansible_ssh_user }}"
+    group: "{{ ansible_ssh_user }}"
+    recurse: true
+  tags:
+  - configuration
