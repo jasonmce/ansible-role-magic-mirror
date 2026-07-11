@@ -41,6 +41,8 @@ Here's how to set up and use this Ansible role for maintaining your Magic Mirror
 
 4. Copy `examples/magic_mirror.yml` to your playbooks directory.
 
+5. Add your Magic Mirror hosts to the `hosts` file.
+
 ## Deployment
 
 ```ansible-playbook -i hosts magic_mirror.yml -l HOST```
@@ -62,7 +64,15 @@ To update your Magic Mirror installations, run the `magic_mirror.yml` playbook w
 
 The inspiration for this role came from the need to automate and simplify the process of maintaining Magic Mirrors. Here's a brief overview of my workflow for deploying a Magic Mirror:
 
-1. I start with the latest [MagicMirrorOS image](http://unofficialpi.org/Distros/MagicMirrorOS/) and use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) for installation to handle networking and SSH keys.
+1. Getting started:
+
+   I always use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to install, because it takes care of the networking configuration and ssh keys.
+
+   You can start with the latest [MagicMirrorOS image](http://unofficialpi.org/Distros/MagicMirrorOS/).
+
+   You can also start with Raspberry Pi OS with Desktop install.  Once it is booted and I've confirmed I can ssh into the device, I run:
+   ```ansible-playbook -i hosts magic_mirror.yml --tags install -l new_device_name```
+   to install using the github MagicMirrirOrg mm-install command.
 
 2. Once the device is booted, I SSH into it to confirm key functionality and manually run `sudo apt-get update` to address any warnings or issues.
 
