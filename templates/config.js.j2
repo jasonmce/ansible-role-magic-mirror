@@ -31,6 +31,9 @@ var config = {
 	logLevel: ["INFO", "LOG", "WARN", "ERROR"],
 	timeFormat: 12,
 	units: "imperial",
+{% if mm_electron_switches is defined %}
+	electronSwitches: {{ mm_electron_switches | to_json }},
+{% endif %}
 	// serverOnly:  true/false/"local" ,
 	// local for armv6l processors, default
 	//   starts serveronly and then starts chrome browser
