@@ -55,6 +55,28 @@
   tags:
   - configuration
 
+- name: Check MMM-SnmpIntSpeed cache
+  ansible.builtin.stat:
+    path: "{{ mm_root }}/modules/MMM-SnmpIntSpeed/data/snmp.json"
+  register: snmp_int_speed_cache
+  when: mm_modules | selectattr('name', 'equalto', 'MMM-SnmpIntSpeed') | list | length > 0
+  tags:
+  - configuration
+  - reload
+  - upgrade
+
+- name: Remove empty MMM-SnmpIntSpeed cache
+  ansible.builtin.file:
+    path: "{{ mm_root }}/modules/MMM-SnmpIntSpeed/data/snmp.json"
+    state: absent
+  when:
+  - snmp_int_speed_cache.stat.exists | default(false)
+  - snmp_int_speed_cache.stat.size | default(1) == 0
+  tags:
+  - configuration
+  - reload
+  - upgrade
+
 - name: Restart install with new config
   ansible.builtin.shell: |
     pm2 restart MagicMirror
