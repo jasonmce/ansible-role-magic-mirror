@@ -12,13 +12,10 @@
   tags:
   - install
 
-- name: Magic Mirror installed
+- name: Magic Mirror native installed
   ansible.builtin.stat:
     path: /home/pi/MagicMirror
   register: magic_mirror_normal
-  tags:
-  - install
-  - upgrade
 
 - name: Magic Mirror docker installed
   ansible.builtin.stat:
