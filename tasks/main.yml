@@ -40,7 +40,12 @@
   - configuration
 
 - name: Install Modules
-  ansible.builtin.include_tasks: install_module.yml
+  ansible.builtin.include_tasks:
+    file: install_module.yml
+    apply:
+      tags:
+      - configuration
+      - upgrade
   when: item.github is defined
   with_items: "{{ mm_modules }}"
   tags:
