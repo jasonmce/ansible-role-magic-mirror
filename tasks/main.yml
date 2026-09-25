@@ -16,6 +16,8 @@
   ansible.builtin.stat:
     path: /home/pi/MagicMirror
   register: magic_mirror_normal
+  tags:
+  - upgrade
 
 - name: Magic Mirror docker installed
   ansible.builtin.stat:
