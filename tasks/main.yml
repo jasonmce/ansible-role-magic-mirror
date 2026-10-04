@@ -24,6 +24,39 @@
     path: /home/pi/magicmirror
   register: magic_mirror_docker
 
+# Dependency installation recreates lockfiles; restore only tracked lockfile changes.
+- name: Find changed Magic Mirror lockfiles
+  ansible.builtin.command:
+    argv:
+    - git
+    - diff
+    - --name-only
+    - HEAD
+    - --
+    - ':(glob)**/*-lock.json'
+    chdir: "{{ mm_root }}"
+  register: magic_mirror_changed_lockfiles
+  changed_when: false
+  when: magic_mirror_normal.stat.exists
+  tags:
+  - upgrade
+
+- name: Restore Magic Mirror lockfiles before upgrade
+  ansible.builtin.command:
+    argv:
+    - git
+    - restore
+    - --source=HEAD
+    - --staged
+    - --worktree
+    - --
+    - "{{ item }}"
+    chdir: "{{ mm_root }}"
+  loop: "{{ magic_mirror_changed_lockfiles.stdout_lines | default([]) }}"
+  when: magic_mirror_normal.stat.exists
+  tags:
+  - upgrade
+
 # From https://github.com/sdetweil/MagicMirror_scripts#upgrade-to-next-magicmirror-version-from-an-existing-installation
 - name: Upgrade normal Magic Mirror install
   ansible.builtin.shell: |
