@@ -81,6 +81,8 @@
       - upgrade
   when: item.github is defined
   with_items: "{{ mm_modules }}"
+  loop_control:
+    label: "{{ item.name }}"
   tags:
   - configuration
   - upgrade

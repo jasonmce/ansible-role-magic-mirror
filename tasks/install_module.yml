@@ -1,37 +1,30 @@
 ---
-# Some modules have their package.json changed during installation.
+# Restore generated lockfiles without discarding module source changes.
 - name: "Module path exists"
-  become: true
   stat:
     path: "{{ mm_root }}/modules/{{ item.name }}"
   register: register_module_path
 
-- name: "Restore changes to {{ item.name }} if necessary"
-  become: true
+- name: "Restore tracked lockfiles for {{ item.name }}"
   ansible.builtin.shell:
-    cmd: git reset --hard --quiet
+    cmd: git ls-files -z -- '*-lock.json' | xargs -0 --no-run-if-empty git restore --worktree --
     chdir: "{{ mm_root }}/modules/{{ item.name }}"
   when: register_module_path.stat.exists
 
 - name: "Download Module {{ item.name }}"
-  become: true
   ansible.builtin.git:
     repo: "{{ item.github }}"
     dest: "{{ mm_root }}/modules/{{ item.name }}"
     clone: yes
-    force: yes
+    force: no
     update: yes
 
+- name: "Check dependency manifest for {{ item.name }}"
+  ansible.builtin.stat:
+    path: "{{ mm_root }}/modules/{{ item.name }}/package.json"
+  register: module_package
+
 - name: "NPM Install Module {{ item.name }}"
-  become: true
   ansible.builtin.npm:
     path: "{{ mm_root }}/modules/{{ item.name }}"
-  ignore_errors: yes
-
-- name: "Ensure {{ item.name }} is writable by SSH user"
-  become: true
-  ansible.builtin.file:
-    path: "{{ mm_root }}/modules/{{ item.name }}"
-    owner: "{{ ansible_ssh_user }}"
-    group: "{{ ansible_ssh_user }}"
-    recurse: true
+  when: module_package.stat.exists
