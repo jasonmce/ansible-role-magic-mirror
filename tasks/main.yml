@@ -79,8 +79,7 @@
       tags:
       - configuration
       - upgrade
-  when: item.github is defined
-  with_items: "{{ mm_modules }}"
+  loop: "{{ mm_modules | selectattr('github', 'defined') | list }}"
   loop_control:
     label: "{{ item.name }}"
   tags:
